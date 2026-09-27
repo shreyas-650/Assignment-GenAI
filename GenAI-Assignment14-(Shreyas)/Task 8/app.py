@@ -1,37 +1,56 @@
-#Task 8 Univariate Analysis
+#Task 7 Imported
+import pandas as pd
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler,OneHotEncoder,OrdinalEncoder
+from sklearn.compose import ColumnTransformer
 
-# Data Cleaning:
-import pandas as pd 
-import matplotlib.pyplot as plt
-import seaborn as sns
+path = '../online food delivery dataset.csv'
+df = pd.read_csv(path)
+#Refining Data
+df.drop(columns=['Unnamed: 13','latitude','longitude','Pin code'],inplace=True)
 
-df = pd.read_csv('../performance.csv')
-df = df[['Hours_Studied', 'Attendance', 'Parental_Involvement',
-       'Access_to_Resources', 'Sleep_Hours', 'Motivation_Level', 'Internet_Access',
-        'Family_Income', 'Teacher_Quality', 'Gender',
-       'Exam_Score']]
-#handling missing values
-df['Teacher_Quality'] = df['Teacher_Quality'].astype('category')
-df['Teacher_Quality'] = df['Teacher_Quality'].fillna(df['Teacher_Quality'].mode()[0])
-#No duplicated row if it had I had used df['Name']= df['Name'].drop_duplicates()
+X = df.drop(columns=['Output'])
+Y = df['Output']
 
-#rename col to lowercase and snake_case
+numeric_col = X.select_dtypes(include=['number']).columns
+ordinal_col = ['Occupation']
+norminal_col = X.select_dtypes(include=['object','string']).columns
+norminal_col = norminal_col.drop('Occupation')
 
-df.columns = df.columns.str.lower()
+#Creating Seprate Pipelines
+Num_pipeline = Pipeline(steps=[('impute',SimpleImputer(strategy='mean')),('scaling',StandardScaler())])
+Ordinal_pipeline = Pipeline(steps=[('impute',SimpleImputer(strategy='most_frequent')),('encode',OrdinalEncoder()),('scaling',StandardScaler())])
+norminal_pipeline = Pipeline(steps=[('impute',SimpleImputer(strategy='most_frequent')),('encode',OneHotEncoder(handle_unknown='ignore'))])
 
-#fixing incorrect dtypes
-df['parental_involvement']=df['parental_involvement'].astype('category')
-df['access_to_resources']=df['access_to_resources'].astype('category')
+#Combine Them
 
-#Univariate Analysis
+features = ColumnTransformer(transformers=[('Numeric Pipeline',Num_pipeline,numeric_col),('Ordinal Pipeline',Ordinal_pipeline,ordinal_col),('Norminal Pipeline',norminal_pipeline,norminal_col)])
 
-sns.histplot(data=df,x='sleep_hours',kde=True)
-plt.figure()
-sns.countplot(data=df,x='access_to_resources')
-plt.figure()
-sns.boxplot(data=df,x='sleep_hours')
-sns.boxplot(data=df,x='sleep_hours')
-plt.figure()
-#4
-sns.heatmap(pd.crosstab(df['gender'],df['teacher_quality'],normalize=True)*100)
-plt.show()
+#-----------   Task 8 Full Scikit-learn Pipeline
+#-----------   Model Creation = Features + Algorithm
+
+from sklearn.linear_model import LogisticRegression
+
+model = Pipeline(steps=[('features',features),('algo',LogisticRegression())])
+
+#-----------   Split Data into train-test sets
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder #for Output column
+
+Y = LabelEncoder().fit_transform(Y)
+
+X_train,X_test,Y_train,Y_test = train_test_split(X,Y,test_size=0.2)
+
+#---------------- Model Train and Prediction
+
+model.fit(X_train,Y_train)
+Y_predict = model.predict(X_test)
+
+#----------------   Accuracy
+
+from sklearn.metrics import accuracy_score
+print(accuracy_score(Y_test,Y_predict))
+
+
