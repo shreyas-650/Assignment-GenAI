@@ -12,7 +12,6 @@ df = pd.read_csv(path)
 #Data Cleaning and Preprocessing
 df['owner'] = df['owner'].replace(['Third Owner','Fourth & Above Owner'],'Third & Above Owner')
 
-df.drop(columns=['name'],inplace=True)
 df.drop_duplicates(inplace=True)
 
 # for col in df.select_dtypes(include='object').columns:
@@ -20,13 +19,19 @@ df.drop_duplicates(inplace=True)
 # for col in df.select_dtypes(include='number').columns:
 #     print(col,df[col].describe())
 
+#feature selection
+brand = df['name'].str.split().str[0]
+df.insert(0,'brand',brand)
+df.drop(columns=['name'],inplace=True)
+
+
 #Encoding
 oe = OrdinalEncoder(categories=[['Third & Above Owner','Second Owner','Test Drive Car','First Owner']])
 df['owner'] = oe.fit_transform(df[['owner']])
 ohe = OneHotEncoder(sparse_output=False)
-x = ohe.fit_transform(df[['fuel','seller_type','transmission']])
+x = ohe.fit_transform(df[['brand','fuel','seller_type','transmission']])
 df[ohe.get_feature_names_out()] = x
-df.drop(columns=['fuel','seller_type','transmission'],inplace=True)
+df.drop(columns=['brand','fuel','seller_type','transmission'],inplace=True)
 
 temp = df.pop('selling_price')
 df.insert(len(df.columns),'selling_price',temp)
@@ -50,6 +55,19 @@ plt.xlabel('Actual Value')
 plt.ylabel('Y Predict')
 plt.title('Actual Vs Predicted Car Price')
 plt.show()
+
+# Metrix Calculation
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+mae = mean_absolute_error(Y_test, Y_predict)
+mse = mean_squared_error(Y_test, Y_predict)
+rmse = mse ** 0.5
+r2 = r2_score(Y_test, Y_predict)
+
+print("MAE :", mae)
+print("MSE :", mse)
+print("RMSE:", rmse)
+print("R²  :", r2)
 
 
 
