@@ -1,13 +1,12 @@
-#Task 10 Conceptual Questions
+#Task 10 Observations and Limitations
 """""
-
-1. Difference between One-Hot Encoding and BoW 
-One Hot Encoding is for single word, only 0 and 1, while Bow is for sentence/document with no of word count
-2. Why N-grams increase dimensionality 
-with increase in n-grams features are also combined(vocabulary)
-
-3. When to prefer TF-IDF over BoW 
-For Information Reterival
-4. Limitations of count-based vectorization
-Can't predict semantic relationship of words, sparse array,etc
+Write short answers: 
+1. Difference between CBOW & Skip-Gram in practice 
+CBOW uses context word as X and Predicted Word At Y, Skip Gram is opposite of it
+2. Advantages of Word2Vec over TF-IDF 
+It is faster, can give us idea about the relation between two words
+3. Limitations of Word2Vec 
+Dimention Become Huge, Training Time is high 
+4. Why context still matters in modern NLP (lead-in to transformers)
+Context help to play a vital role as it is the Input of the ANN so that we get the output
 """
