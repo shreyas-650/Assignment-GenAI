@@ -1,18 +1,19 @@
-#Task 6: Tokenization
-from sklearn.feature_extraction.text import CountVectorizer
+#Task 6: Train Word2Vec Model
+
 import pandas as pd
-
+import gensim
+from nltk.tokenize import word_tokenize,sent_tokenize
 df = pd.read_csv('../final_clean_text.csv')
-clean = df['final_clean'].head(100)
+df = df['final_clean'].head(110)
+word =[]
+for x in df:
+    for y in sent_tokenize(x):
+        word.append(word_tokenize(y))
 
+model = gensim.models.Word2Vec(window=5,vector_size=100,min_count=1,sg=0)
+model.build_vocab(word)
+model.train(word,total_examples=model.corpus_count,epochs=model.epochs)
+print(model.wv.key_to_index)
+print('\n',model.wv['car'])
 
-
-cv = CountVectorizer(ngram_range=(1,2))
-text = cv.fit_transform(clean)
-print('\nFor Ngram_range(1,2)')
-print(len(cv.vocabulary_))
-print(cv.get_feature_names_out())
-print(text.toarray())
-print(text.toarray().shape) 
-#observation:- ngram range 1,1 + 2,2 = 4266 + 11372 = 15638 
 

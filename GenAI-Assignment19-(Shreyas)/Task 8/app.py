@@ -1,38 +1,23 @@
-#Task 8 BoW vs TF-IDF Comparison
-from sklearn.feature_extraction.text import TfidfVectorizer
+#Task 8 Word Similarity & Vector Operations
+
 import pandas as pd
-import numpy as np
+import gensim
+from nltk.tokenize import word_tokenize,sent_tokenize
+
 df = pd.read_csv('../final_clean_text.csv')
-clean = df['final_clean'].head(100)
-tf = TfidfVectorizer()
-encoding = tf.fit_transform(clean).toarray()
-features=tf.get_feature_names_out()
+df = df['final_clean'].head(110)
+word =[]
+for x in df:
+    word.append(word_tokenize(x))
 
+model = gensim.models.Word2Vec(window=5,vector_size=100,min_count=1,sg=0)
+model.build_vocab(word)
+model.train(word,total_examples=model.corpus_count,epochs=model.epochs)
+print(model.wv.most_similar('man'))
 
-#-------------------------------------
-max_value = encoding.max()
-index = encoding.argmax() #Return the index of maximum
-row, col = divmod(index, encoding.shape[1])
+vec = model.wv['king'] - model.wv['man'] + model.wv['women']
+print('\n',model.wv.most_similar([vec]))
 
-print('Word:', features[col])
-print('TF-IDF:', max_value)
+print('\n',model.wv.doesnt_match(['car','man','women']))
 
-#---------------- Top 10 High TF-IDF
-
-word_scores = encoding.max(axis=0)
-print(word_scores)
-top_10 = np.argsort(word_scores)[-10:][::-1]
-
-for i in top_10:
-    print(features[i], word_scores[i])
-
-#----------------- Low TF-IDF
-word_scores = encoding.min(axis=0)
-
-top_10 = np.argsort(word_scores)[:10]
-
-for i in top_10:
-    print(features[i], word_scores[i])
-
-
-#TF-IDF down-weights common words because a word that appears in many documents doesnt help distinguish one document from another.
+print('\n',model.wv.similarity('ball','bat'))

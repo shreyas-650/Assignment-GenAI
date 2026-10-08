@@ -1,16 +1,10 @@
-#Task 5 Unigrams,Bigrams & Trigrams
-from sklearn.feature_extraction.text import CountVectorizer
+#Task 5 Prepare Text for Word2Vec
 import pandas as pd
-
+from nltk.tokenize import sent_tokenize,word_tokenize
 df = pd.read_csv('../final_clean_text.csv')
-clean = df['final_clean'].head(100)
-
-for x in range(1,4):
-
-    cv = CountVectorizer(ngram_range=(x,x))
-    text = cv.fit_transform(clean)
-    print('\nFor Ngram_range',x)
-    print(len(cv.vocabulary_))
-    print(cv.get_feature_names_out())
-    print(text.toarray())
-    print(text.toarray().shape)
+df = df['final_clean'].head(20)
+sentance = []
+for x in df:
+    for y in sent_tokenize(x):
+        sentance.append(word_tokenize(y))
+print(sentance)
