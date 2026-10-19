@@ -1,4 +1,4 @@
-# Wine Quality Prediction using ANN
+# 🍷 Wine Quality Prediction using ANN
 
 An Artificial Neural Network (ANN) regression project that predicts wine
 quality from physicochemical properties. The notebook uses **KerasTuner
