@@ -1,71 +1,126 @@
-# 🧠 Assignment 19: Word Embeddings & Word2Vec
+# Wine Quality Prediction using ANN
 
-A practical Natural Language Processing assignment covering word embeddings, Word2Vec, CBOW, Skip-Gram, word similarity, vector operations, and embedding visualization.
+An Artificial Neural Network (ANN) regression project that predicts the
+quality score of red wine from its physicochemical properties. The
+notebook uses **KerasTuner Random Search** to tune model
+hyperparameters.
 
-## 📌 Dataset
+## Dataset
 
-**IMDB Dataset of 50K Movie Reviews**
+Use the **Wine Quality -- Red** dataset (`winequality-red.csv`) from the
+UCI Machine Learning Repository.
 
-This assignment uses a **cleaned and preprocessed version** of the IMDB movie reviews dataset.
+-   **Target:** `quality`
+-   **Input features:** 11 physicochemical measurements, including
+    acidity, residual sugar, chlorides, density, pH, sulphates, and
+    alcohol.
+-   **Task:** Regression. The model predicts a numerical quality score.
+-   **CSV format:** This dataset uses semicolons (`;`) as separators.
 
-🔗 [Original Dataset - Kaggle](https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews)
+Place the dataset in the project root and name it `data.csv`, or update
+the filename in the notebook.
 
-## 📚 Topics Covered
+## Workflow
 
-### PART 1 — Introduction to Word Embeddings
+1.  Load the CSV with `sep=';'`.
+2.  Inspect missing values and remove duplicate rows.
+3.  Separate features (`X`) from the target (`Y = quality`).
+4.  Split the data into training, validation, and test sets.
+5.  Standardize features with `StandardScaler`, fitting it only on the
+    training set.
+6.  Build an ANN with ReLU hidden layers and a linear output layer.
+7.  Use KerasTuner `RandomSearch` to tune the number of hidden layers,
+    neurons, dropout rate, and optimizer.
+8.  Retrain the selected model with early stopping.
+9.  Evaluate final performance on the held-out test set using test loss
+    and MAE.
 
-- Understanding Word Embeddings
-- Limitations of One-Hot Encoding
-- Limitations of Bag of Words
-- Semantic representation using word embeddings
+## Model configuration
 
-### PART 2 — Word2Vec Overview & Techniques
+-   **Hidden activation:** ReLU
+-   **Output layer:** 1 neuron with linear activation
+-   **Loss:** Mean Squared Error (MSE)
+-   **Metric:** Mean Absolute Error (MAE)
+-   **Hyperparameter tuning:** KerasTuner Random Search
+-   **Regularization:** Dropout
+-   **Early stopping:** Monitors validation loss and restores the best
+    weights
 
-- Word2Vec overview
-- Predicting words from context
-- Vocabulary
-- Context window
-- Embedding dimensions
-- CBOW (Continuous Bag of Words)
-- Skip-Gram
-- Neural Network intuition behind Word2Vec
-- Preparing text for Word2Vec
-- Training Word2Vec using Gensim
-- Comparing CBOW and Skip-Gram
-- Word similarity and vector operations
-- PCA dimensionality reduction
-- Word embedding visualization
+## Setup
 
-### PART 3 — Word2Vec Implementation
+Use Python 3.10 or 3.11 with a compatible TensorFlow release.
 
-- Text tokenization
-- Word2Vec model training
-- Vocabulary size
-- Word embedding vectors
-- CBOW Word2Vec
-- Skip-Gram Word2Vec
-- Similar word extraction using `most_similar()`
-- Vector operations
-- PCA-based visualization
+``` bash
+python -m venv .venv
+```
 
-### PART 4 — Evaluation & Insights
+Activate the environment:
 
-- Visualizing word embeddings
-- Comparing CBOW and Skip-Gram
-- Advantages of Word2Vec over TF-IDF
-- Limitations of Word2Vec
-- Importance of context in modern NLP
+**Windows**
 
-## 📋 Assignment Tasks
+``` powershell
+.venv\Scripts\activate
+```
 
-```text
-Task 1  Understanding Word Embeddings
-Task 2  Word2Vec Overview
-Task 3  Types of Word2Vec Techniques
-Task 4  Neural Network Intuition Behind Word2Vec
-Task 5  Prepare Text for Word2Vec
-Task 6  Train Word2Vec Model
-Task 7  Skip-Gram Word2Vec Model
-Task 8  Word Similarity & Vector Operations
-Task 9  Visualizing Word Embeddings
-Task 10 Observations & Limitations
+**macOS/Linux**
+
+``` bash
+source .venv/bin/activate
+```
+
+Install dependencies:
+
+``` bash
+pip install -r requirements.txt
+```
+
+Launch Jupyter:
+
+``` bash
+jupyter notebook
+```
+
+Open `app.ipynb` and run the cells from top to bottom.
+
+## Results
+
+The recorded experiment reported:
+
+  Metric               Value
+  ----------------- --------
+  Test MSE (loss)     0.6353
+  Test MAE            0.6046
+  Test RMSE           0.7971
+  Test R²             0.2465
+
+These are example results from one run, not guaranteed results. Results
+can vary with data splitting, model initialization, library versions,
+and tuning trials. An R² of about 0.25 indicates modest predictive
+performance; this project is primarily for learning ANN training and
+hyperparameter tuning.
+
+## Important notes
+
+-   The test set should be used only for final evaluation, not for
+    selecting hyperparameters.
+-   The current notebook uses a relatively broad search space. More
+    layers or more trials do not automatically improve performance.
+-   Wine quality scores are discrete and ordinal, but this notebook
+    treats them as a regression target.
+-   The notebook expects the CSV file at `data.csv` unless you change
+    the path.
+
+## Project files
+
+``` text
+.
+├── app.ipynb
+├── data.csv                 # Add the dataset locally; do not commit it unless its license permits
+├── README.md
+└── requirements.txt
+```
+
+## Dataset source
+
+UCI Machine Learning Repository:
+https://archive.ics.uci.edu/dataset/186/wine+quality
