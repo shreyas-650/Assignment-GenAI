@@ -1,4 +1,4 @@
-# 🤖 Assignment 16: SVM, Trees, Ensembles, Validation & Unsupervised Learning
+# 🤖 Assignment 16: SVM, Trees, Ensembles, Validation
 
 A practical Machine Learning assignment covering Support Vector Machines, Decision Trees, model validation, cross-validation, and ensemble learning using Python and Scikit-learn.
 
