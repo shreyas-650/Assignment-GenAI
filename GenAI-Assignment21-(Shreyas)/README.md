@@ -44,7 +44,6 @@ This assignment covers three areas:
 - LangChain text splitters
 - PyPDF for PDF extraction
 - Beautiful Soup support for webpage parsing
-- OpenAI embeddings and LangChain's experimental semantic splitter, if running the optional semantic demo
 
 ## Installation
 
