@@ -1,92 +1,220 @@
-# Llama Chatbot with LangSmith Tracking
 
-A simple AI chatbot built using Streamlit, LangChain, and Ollama. It uses the locally running Llama 3.2 model to generate responses to user questions.
+# Assignment 25: Prompting & LangChain Chains
 
-## Technologies Used
+This assignment focuses on building LLM-powered applications using LangChain, covering prompt engineering, structured outputs, chains, conditional execution, parallel execution, and LangChain Expression Language (LCEL).
+
+## 🎯 Objectives
+
+- Understand Prompt Templates and Chat Prompt Templates.
+- Generate structured LLM outputs using Pydantic.
+- Implement validation and error handling.
+- Build simple, conditional, and parallel chains.
+- Understand Runnable components and LCEL.
+- Build a Retrieval-Augmented Generation (RAG) pipeline.
+
+## 🛠️ Tech Stack
+
 - Python
-- Streamlit
 - LangChain
-- Ollama (Llama 3.2)
-- LangSmith
+- Gemini 2.5 Flash
+- Ollama
+- FAISS
+- Pydantic
+- Google Generative AI
 - Python-dotenv
 
-## Features
-- Interactive chatbot interface using Streamlit.
-- Runs locally using Ollama.
-- Generates responses using Llama 3.2.
-- LangSmith integration for application tracing and monitoring.
+## 📚 Assignment Tasks
 
-## Application Screenshot
+### Part 1: Prompt Templates
 
-![Llama Chatbot](chatbot.png)
+**Task 1: PromptTemplate**
+- Created PromptTemplate with system instructions and user question placeholders.
+- Injected user input dynamically.
+- Tested with multiple inputs.
 
-## LangSmith Tracking
+**Task 2: ChatPromptTemplate & Message Templates**
+- Implemented ChatPromptTemplate.
+- Used SystemMessage and HumanMessage.
+- Explored AIMessage for conversation structure.
+- Compared ChatPromptTemplate with PromptTemplate.
 
-![LangSmith Tracking](langsmith_tracking.png)
+### Part 2: Structured Output Using Pydantic
 
-## Installation
+**Task 3: Pydantic Output Schema**
+- Defined Pydantic models for structured chatbot responses.
+- Used LangChain output parsers.
+- Generated structured outputs containing answer, confidence, and source.
 
-**1. Clone the repository**
+**Task 4: Validation & Error Handling**
+- Handled invalid LLM outputs.
+- Explored retry and fallback mechanisms when the expected schema is not followed.
 
-```bash
-git clone <your-repository-url>
-cd <repository-name>
+### Part 3: Chains in LangChain
+
+**Task 5: Simple Chain**
+- Created a basic Prompt → LLM → Output Parser pipeline.
+- Executed the chain using LangChain Expression Language.
+
+**Task 6: Conditional Chain**
+- Built a conditional question-answering pipeline.
+- Classified queries as factual or non-factual.
+- Routed factual questions through document retrieval.
+- Used direct LLM responses for non-factual questions.
+- Implemented conditional routing using RunnableBranch.
+
+**Task 7: Parallel Chain**
+- Executed multiple chains in parallel.
+- Generated answers, summaries, and follow-up questions.
+- Combined the outputs into a unified response.
+
+**Task 9: LCEL-Based RAG Chain**
+- Built a Retrieval-Augmented Generation pipeline using LCEL.
+- Connected Retriever, Prompt, LLM, and Output Parser.
+- Tested the pipeline with multiple user queries.
+
+## 🔄 Conditional RAG Pipeline
+
+The conditional chain uses query classification to decide which execution path to follow.
+
+```text
+                 User Query
+                      |
+                      v
+               RunnableParallel
+                /           \
+       Original Query    Query Classification
+                              |
+                              v
+                       Gemini 2.5 Flash
+                              |
+                              v
+                       RunnableBranch
+                       /           \
+                  Factual        Non-Factual
+                     |                |
+                     v                v
+                FAISS Search     Direct LLM
+                     |                |
+                     v                |
+               Context + Query        |
+                     |                |
+                     v                |
+                   Gemini 2.5 Flash
+                       \           /
+                        \         /
+                         v       v
+                       Final Answer
 ```
 
-**2. Install dependencies**
+### Key Components
+
+| Component | Purpose |
+|---|---|
+| RunnableParallel | Runs multiple operations while preserving their outputs. |
+| RunnableBranch | Selects an execution path based on a condition. |
+| RunnableLambda | Converts a Python function into a runnable. |
+| RunnablePassthrough | Passes input through without modification. |
+| FAISS | Stores and retrieves document embeddings. |
+| PydanticOutputParser | Parses LLM output into a structured Pydantic model. |
+| StrOutputParser | Converts model output into a string. |
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the repository
 
 ```bash
-pip install streamlit langchain-ollama python-dotenv
+git clone https://github.com/shreyas-650/Assignment-GenAI/tree/main/GenAI-Assignment25-(Shreyas)
+cd <repository-folder>
 ```
 
-**3. Install and download the Ollama model**
+### 2. Create a virtual environment
+
+```bash
+python -m venv venv
+```
+
+Activate it:
+
+**Windows:**
+```bash
+venv\Scripts\activate
+```
+
+**Linux / macOS:**
+```bash
+source venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure environment variables
+
+Create a `.env` file in the project directory:
+
+```env
+GOOGLE_API_KEY=your_google_api_key
+```
+
+Keep your API keys private. Do not upload `.env` to GitHub.
+
+### 5. Run the scripts
+
+Navigate to the required task directory and execute:
+
+```bash
+python app.py
+```
+
+Some tasks may require Ollama to be installed and running locally.
+
+For the embedding model:
+
+```bash
+ollama pull nomic-embed-text
+```
+
+For the language model:
 
 ```bash
 ollama pull llama3.2
 ```
 
-**4. Configure LangSmith**
-
-Add your LangSmith credentials and tracing configuration to the `.env` file:
-
-```env
-LANGCHAIN_API_KEY = your_langsmith_api_key
-LANGSMITH_AGENT_ID= ollama-chat-bot
-LANGCHAIN_TRACING = true
-LANGSMITH_ENDPOINT= https://aws.api.smith.langchain.com
-LANGSMITH_AGENT_ENVIRONMENT= local
-(Change values according to your config)
-```
-
-**5. Run the application**
-
-```bash
-streamlit run app.py
-```
-
-## How It Works
-
-1. User enters a question in the Streamlit interface.
-2. LangChain sends the prompt to the Ollama Llama 3.2 model.
-3. The model generates a response locally.
-4. The response is displayed in the Streamlit application.
-5. LangSmith can track application execution when tracing is configured.
-
-## Project Structure
+## 📂 Project Structure
 
 ```text
-Llama-Chatbot/
+Assignment-GenAI/
 │
-├── app.py
-├── .env
-├── chatbot.png
-├── langsmith_tracking.png
-├── requirements.txt
-└── README.md
+└── Assignment25-(Shreyas)/
+    │
+    ├── Task 1/
+    ├── Task 2/
+    ├── Task 3/
+    ├── Task 4/
+    ├── Task 5/
+    ├── Task 6/
+    ├── Task 7/
+    ├── Task 8/
+    ├── Task 9/
+    ├── Task 10/
+    └── Task 11/
+
 ```
 
-## Key Learnings
-- Integrating Ollama with LangChain.
-- Building interactive AI applications using Streamlit.
-- Running LLMs locally.
-- Tracking and monitoring LLM applications using LangSmith.
+Each task contains its respective implementation and supporting files.
+
+## 📖 Key Learnings
+
+- Working with different prompt templates.
+- Generating structured outputs with Pydantic.
+- Building reusable LLM chains.
+- Understanding LCEL and Runnable components.
+- Implementing conditional and parallel execution.
+- Integrating vector databases with retrieval pipelines.
+- Building context-aware question-answering systems using RAG.
+
+---
+
