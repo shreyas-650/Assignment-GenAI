@@ -1,54 +1,62 @@
-
-# GenAI Assignment A27: Chatbots with Conversation History using LangChain
+# GenAI Assignment A28: Conversational RAG Chatbot with Message History
 
 ## Overview
-This assignment focuses on implementing conversation history in LangChain, managing chat messages, trimming old messages, and building a stateful Q&A chatbot using Streamlit.
+This assignment focuses on building a conversational RAG chatbot using LangChain. It covers document retrieval, prompt engineering, conversation history management, message trimming, and multi-turn question answering.
 
 ## Tasks Completed
 
-### Task 1: Understanding Chat Messages
-- Explored SystemMessage, HumanMessage, and AIMessage.
-- Understood message-based prompting.
+### Task 1: Document Ingestion & Processing
+- Loaded documents using LangChain document loaders.
+- Used `RecursiveCharacterTextSplitter` to split documents into smaller chunks.
+- Configured chunk size and chunk overlap.
 
-### Task 2: MessagePlaceholder Usage
-- Created ChatPromptTemplate.
-- Used MessagesPlaceholder for chat history.
-- Injected dynamic conversation history into prompts.
+### Task 2: Embeddings & Vector Store
+- Generated embeddings for document chunks.
+- Stored embeddings in a vector store.
+- Created a retriever to fetch relevant document context.
 
-### Task 3: Basic Message History
-- Stored conversation messages in a list.
-- Appended HumanMessage and AIMessage after interactions.
-- Passed conversation history to the LLM.
+### Task 3: Prompt with Message History
+- Created a `ChatPromptTemplate`.
+- Used `MessagesPlaceholder` to include conversation history.
+- Designed prompts to answer only from retrieved context.
+- Instructed the model to respond with "I don't know" when information is unavailable.
 
-### Task 4: Trimming Chat History
-- Implemented trim_messages.
-- Used token-based history management.
-- Explored max_tokens, token_counter, include_system, allow_partial, and start_on.
+### Task 4: Q&A RAG Chain with Message History
+- Built a RAG chain using `RunnableParallel`.
+- Integrated the retriever, prompt, LLM, and `StrOutputParser`.
+- Used `RunnableWithMessageHistory` to maintain conversation history.
+- Used `ChatMessageHistory` to store messages based on session IDs.
 
-### Task 5 & 6: Stateful Q&A Chatbot
-- Built a chatbot using RunnableWithMessageHistory.
-- Used ChatMessageHistory to store conversations.
-- Maintained conversation history using session IDs.
-- Integrated Streamlit for the chatbot interface.
-- Used st.session_state to preserve history across Streamlit reruns.
-- Tested follow-up questions using previous conversation context.
+### Task 5: Chat History Management
+- Implemented message storage using `SystemMessage`, `HumanMessage`, and `AIMessage`.
+- Used `trim_messages` for token-based history management.
+- Explored `max_tokens`, `token_counter`, `include_system`, `allow_partial`, and `start_on`.
+- Understood the trade-offs between long conversation history and performance.
+
+### Task 6: Multi-Turn Q&A Testing & Chatbot
+- Tested initial factual questions.
+- Tested follow-up questions referencing previous answers.
+- Tested clarification questions.
+- Verified conversation context preservation and document-grounded answers.
+- Integrated the chatbot with Streamlit.
+- Used `st.session_state` to maintain chat history across Streamlit reruns.
 
 ## Tech Stack
 - Python
 - LangChain
 - Groq (LLM)
 - Streamlit
+- Vector Store
+- Embeddings
 - ChatMessageHistory
 - RunnableWithMessageHistory
+- RecursiveCharacterTextSplitter
 - python-dotenv
 
-## Chatbot Screenshot
-
-![Stateful Chatbot](chatbot.png)
-
 ## Learning Outcomes
-- Understanding conversation history in LangChain.
-- Working with message placeholders.
-- Managing and trimming chat history.
-- Building stateful chatbots.
-- Integrating LangChain with Streamlit.
+- Understanding document ingestion and retrieval in RAG.
+- Working with LangChain message types and prompt templates.
+- Maintaining stateful conversations using message history.
+- Managing token usage through chat history trimming.
+- Building conversational RAG applications with Streamlit.
+- Understanding multi-turn question answering and context preservation.
