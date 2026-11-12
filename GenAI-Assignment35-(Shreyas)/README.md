@@ -4,6 +4,12 @@ An interactive conversational AI application built with **Streamlit**, **LangCha
 
 ---
 
+## 📸 Application Preview
+
+![Application Screenshot](app.png)
+
+---
+
 ## 📌 Task 1: Text-to-Math Agent Overview
 
 ### 1. What is a Text-to-Math problem?
@@ -62,6 +68,7 @@ flowchart TD
 
 ```text
 GenAI-Assignment35-(Shreyas)/
+├── app.png             # Streamlit application screenshot
 ├── app.py              # Main Streamlit application with LangChain agent & tools
 ├── .env                # API keys and environment configurations (git-ignored)
 ├── requirements.txt    # Project dependencies
