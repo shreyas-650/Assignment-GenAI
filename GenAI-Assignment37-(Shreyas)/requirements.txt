@@ -1,0 +1,9 @@
+pypdf
+langchain
+langchain-core
+langchain-community
+langchain-huggingface
+langchain-astradb
+langchain-groq
+sentence-transformers
+python-dotenv
